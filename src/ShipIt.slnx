@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="ShipIt.PriceQuotes.Api.Contracts\ShipIt.PriceQuotes.Api.Contracts.csproj" />
+  <Project Path="ShipIt.PriceQuotes.Api/ShipIt.PriceQuotes.Api.csproj" />
+</Solution>

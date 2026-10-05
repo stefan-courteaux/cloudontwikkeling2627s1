@@ -7,6 +7,12 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/Dotnet.gitignore
 
+# Custom
+**/.idea
+**/.DS_Store
+**/bin
+**/obj
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
