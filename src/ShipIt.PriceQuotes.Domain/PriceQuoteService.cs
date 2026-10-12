@@ -1,28 +1,64 @@
 ﻿using ShipIt.PriceQuote.Api.Contracts;
 using ShipIt.PriceQuotes.Domain.ShipItExceptions;
+using ShipIt.PriceQuotes.Storage;
+using ShipIt.Shared;
 
 namespace ShipIt.PriceQuotes.Domain;
 
 
 public interface IPriceQuoteService
 {
-    PriceQuoteResponseContract CreatePrice(PriceQuoteRequestContract priceToCalc);
+    Task<PriceQuoteResponseContract> CreatePrice(PriceQuoteRequestContract priceToCalc);
+    Task<PriceQuoteResponseContract> GetById(string id);
 }
 
-public class PriceQuoteService : IPriceQuoteService
+public class PriceQuoteService(IPriceQuoteRepository repository) : IPriceQuoteService
 {
-    public PriceQuoteResponseContract CreatePrice(PriceQuoteRequestContract priceToCalc)
+    public async Task<PriceQuoteResponseContract> CreatePrice(PriceQuoteRequestContract priceToCalc)
     {
-//        throw new Exception("KABOOOM");
-
+        // Check NL business rule
         if(priceToCalc.FromCountry == CountryEnum.NL && priceToCalc.WeightKg > 10)
             throw new FromCountryWeightException($"Package weight may not exceed 10kg for fromCountry NL. Value provided was {priceToCalc.WeightKg}");
 
+        // Calculate Price
+        var calculatedPrice = Calc(priceToCalc);
+        var calculatedValidUntil = DateTime.UtcNow.AddHours(48);
+
+        // Save price via storage
+        var dataModel = new PriceQuoteDataModel
+        {
+          createdOn = DateTime.UtcNow,
+          fromCountry = priceToCalc.FromCountry!.Value,
+          toCountry = priceToCalc.ToCountry!.Value,
+          heightCm = priceToCalc.HeightCm,
+          lengthCm = priceToCalc.LengthCm,
+          widthCm = priceToCalc.WidthCm,          
+          weightKg = priceToCalc.WeightKg,
+          validUntil = calculatedValidUntil,
+          price = calculatedPrice
+        };
+
+        var created = await repository.CreateAsync(dataModel);
+
+        // Return created object
         return new PriceQuoteResponseContract
-            {
-              Price = Calc(priceToCalc),
-              ValidUntil = DateTime.UtcNow.AddHours(48)
-            };
+        {
+            Id = created.id,
+            Price = created.price,
+            ValidUntil = created.validUntil
+        };
+    }
+
+    public async Task<PriceQuoteResponseContract> GetById(string id)
+    {
+        var dbQuote = await repository.GetAsync(id);
+
+        return new PriceQuoteResponseContract
+        {
+            Id = dbQuote.id,
+            Price = dbQuote.price,
+            ValidUntil = dbQuote.validUntil
+        };    
     }
 
     private static decimal Calc(PriceQuoteRequestContract priceToCalc)
@@ -37,5 +73,4 @@ public class PriceQuoteService : IPriceQuoteService
 
         return totalPriceRounded;
     }
-
 }
