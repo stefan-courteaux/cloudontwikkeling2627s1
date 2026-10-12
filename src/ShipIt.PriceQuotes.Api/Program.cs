@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using ShipIt.PriceQuotes.Domain;
+using ShipIt.PriceQuotes.Storage;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers().AddJsonOptions(opt => {
@@ -7,6 +8,13 @@ builder.Services.AddControllers().AddJsonOptions(opt => {
         new JsonStringEnumConverter());
 });
 builder.Services.AddScoped<IPriceQuoteService, PriceQuoteService>();
+builder.Services.AddScoped<IPriceQuoteRepository, PriceQuoteRepository>();
+
+builder.Services.Configure<PriceQuoteRepositoryOptions>(
+        builder.Configuration.GetSection(
+            nameof(PriceQuoteRepositoryOptions) 
+        )
+    );
 
 var app = builder.Build();
 

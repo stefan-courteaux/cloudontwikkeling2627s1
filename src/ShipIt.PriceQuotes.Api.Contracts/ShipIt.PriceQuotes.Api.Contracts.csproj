@@ -7,4 +7,8 @@
         <RootNamespace>ShipIt.PriceQuote.Api.Contracts</RootNamespace>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="../ShipIt.Shared/ShipIt.Shared.csproj" />
+    </ItemGroup>
+
 </Project>
