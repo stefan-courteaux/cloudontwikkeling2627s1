@@ -1,0 +1,7 @@
+-- generiek
+az group create --location francecentral --name hogent-stefanc-gent
+az appservice plan create --name hogent-stefanc-gent-plan --resource-group hogent-stefanc-gent --sku F1 --is-linux true
+
+-- quote api
+az webapp create --name hogent-stefanc-gent-quote --plan hogent-stefanc-gent-plan --resource-group hogent-stefanc-gent --runtime "DOTNETCORE|10.0"
+az webapp deploy --name hogent-stefanc-gent-quote --resource-group hogent-stefanc-gent --src-path ./deployme.zip --type zip

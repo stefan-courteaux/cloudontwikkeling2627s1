@@ -12,6 +12,7 @@
 **/.DS_Store
 **/bin
 **/obj
+**/publish
 
 # Build results
 [Dd]ebug/
