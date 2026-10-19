@@ -1,6 +1,14 @@
 <Solution>
-  <Project Path="ShipIt.PriceQuotes.Api.Contracts\ShipIt.PriceQuotes.Api.Contracts.csproj" />
-  <Project Path="ShipIt.PriceQuotes.Api/ShipIt.PriceQuotes.Api.csproj" />
-  <Project Path="ShipIt.PriceQuotes.Domain/ShipIt.PriceQuotes.Domain.csproj" />
-  <Project Path="ShipIt.PriceQuotes.Storage/ShipIt.PriceQuotes.Storage.csproj" />
+  <Folder Name="/Label/">
+    <Project Path="ShipIt.Label.Api/ShipIt.Label.Api.csproj" />
+    <Project Path="ShipIt.Label.Domain/ShipIt.Label.Domain.csproj" />
+    <Project Path="ShipIt.Label.Persistence/ShipIt.Label.Persistence.csproj" />
+  </Folder>
+  <Folder Name="/PriceQuotes/">
+    <Project Path="ShipIt.PriceQuotes.Api.Contracts\ShipIt.PriceQuotes.Api.Contracts.csproj" />
+    <Project Path="ShipIt.PriceQuotes.Api/ShipIt.PriceQuotes.Api.csproj" />
+    <Project Path="ShipIt.PriceQuotes.Domain/ShipIt.PriceQuotes.Domain.csproj" />
+    <Project Path="ShipIt.PriceQuotes.Storage/ShipIt.PriceQuotes.Storage.csproj" />
+  </Folder>
+  <Project Path="ShipIt.Shared/ShipIt.Shared.csproj" />
 </Solution>
