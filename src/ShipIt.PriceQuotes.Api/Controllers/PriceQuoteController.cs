@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ShipIt.PriceQuote.Api.Contracts;
@@ -7,6 +8,7 @@ using ShipIt.PriceQuotes.Domain.ShipItExceptions;
 namespace ShipIt.PriceQuotes.Api.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class PriceQuoteController(IPriceQuoteService quoteService) : ControllerBase
     {
