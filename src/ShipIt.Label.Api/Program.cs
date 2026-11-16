@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Duende.IdentityModel.Client;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using ShipIt.Label.Domain;
@@ -53,9 +54,22 @@ app.MapPost("api/labels", async Task<CreatedAtRoute<string>> (
     [FromBody] LabelRequestContract contract, 
     IDomainController domain) => {
 
-    // get price
     var httpClient = clientFactory.CreateClient();
-    var baseUrl = "https://hogent-stefanc-gent-quote.azurewebsites.net";
+
+    var isUrl = "https://localhost:5001";
+    var disco = await httpClient.GetDiscoveryDocumentAsync(isUrl); 
+    var tokenResponse = await httpClient
+        .RequestClientCredentialsTokenAsync( 
+            new ClientCredentialsTokenRequest {
+                Address = disco.TokenEndpoint,
+                ClientId = "label-api-client",
+                ClientSecret = "eenLabelGeheim",
+                Scope = "shipit.pricequotes.api.read"
+            });
+    httpClient.SetBearerToken(tokenResponse.AccessToken!);
+
+    // get price
+    var baseUrl = "http://localhost:5116";
     var url = $"{baseUrl}/api/pricequote/{contract.QuoteId}";//TODO url should be plural for resources
 
     var options = new JsonSerializerOptions();
@@ -63,7 +77,8 @@ app.MapPost("api/labels", async Task<CreatedAtRoute<string>> (
     options.PropertyNameCaseInsensitive = true;
     var response = await httpClient
         .GetFromJsonAsync<PriceQuoteResponseContract>(url, options); 
-
+    httpClient.SetBearerToken(string.Empty);
+    
     // create label
     var creation = new LabelCreationDTO{
         RecipientAddressLine1 = contract.RecipientAddressLine1,
