@@ -13,6 +13,7 @@ namespace ShipIt.PriceQuotes.Api.Controllers
     public class PriceQuoteController(IPriceQuoteService quoteService) : ControllerBase
     {
         [HttpPost]
+        [Authorize(Policy = "QuoteWritePolicy")]
         public async Task<ActionResult<PriceQuoteResponseContract>> CalculatePrice(
             [FromBody]PriceQuoteRequestContract requestContract)
         {
@@ -33,6 +34,7 @@ namespace ShipIt.PriceQuotes.Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Policy = "QuoteReadPolicy")]
         public async Task<ActionResult<PriceQuoteResponseContract>> GetPrice(
             [FromRoute]string id)
         {
